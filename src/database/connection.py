@@ -13,7 +13,7 @@ async_session = async_sessionmaker(
     class_=AsyncSession,
     )
 
-async def get_session(commit: bool = True) -> AsyncSession:
+async def get_async_session(commit: bool = True) -> AsyncSession:
     session = async_session()
     try:
         yield session
