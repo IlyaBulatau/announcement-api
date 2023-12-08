@@ -11,3 +11,12 @@ req_install:
 
 logs:
 	docker logs app -f
+
+stop:
+	docker stop $$(docker ps -a -q)
+
+migration:
+	$(POETRY) alembic revision --autogenerate
+
+migrate:
+	$(POETRY) alembic upgrade head
