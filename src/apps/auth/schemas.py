@@ -2,6 +2,7 @@ import uuid
 from datetime import datetime
 from typing import Optional
 
+from pydantic import EmailStr
 from fastapi_users import schemas
 
 
@@ -14,8 +15,10 @@ class UserRead(schemas.BaseUser[uuid.UUID]):
         orm_mode = True
 
 
-class UserCreate(schemas.BaseUserCreate):
-    username: str 
+class UserCreate(schemas.CreateUpdateDictModel):
+    username: str
+    email: EmailStr
+    password: str
 
 
 class UserUpdate(schemas.BaseUserUpdate):
