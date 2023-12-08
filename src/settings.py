@@ -2,7 +2,7 @@ from environs import Env
 from pathlib import Path
 
 
-BASE_DIR = Path.parent
+BASE_DIR = Path(__name__).absolute().parent
 
 ENV_FILE = ".env"
 ENV = Env()
@@ -28,3 +28,5 @@ class DatabaseSetting:
             port=self.POSTGRES_PORT,
             db=self.POSTGRES_DB,
         )
+    
+JWT_SECRET = ENV("JWT_SECRET")
