@@ -9,7 +9,7 @@ from alembic import context
 
 from src.database.models.base import BaseModel
 from src.settings import DatabaseSetting
-from src.database.models import User
+from src.database.models import User, Announcement, Category
 
 
 settings = DatabaseSetting()
