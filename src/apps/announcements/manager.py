@@ -31,11 +31,15 @@ class AnnouncementRepositoryManager(RepositoryManager):
         result = await self.session.execute(query)
         return (result.scalar(), category)
 
-    async def get_detail(self, announcement_id: ID) -> tuple[Announcement, Category]:
+    async def get_detail(self, announcement_id: ID) -> tuple[Announcement, Category] | tuple[None, None]:
         query = select(Announcement).filter(Announcement.id == announcement_id)
         result = await self.session.execute(query)
 
         announcement: Announcement = result.scalar()
+        
+        if not announcement:
+            return (None, None)
+        
         category: Category = await self.get_or_create_category(
             id=announcement.category_id
         )
