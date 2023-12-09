@@ -1,5 +1,6 @@
 from environs import Env
 from pathlib import Path
+import logging
 
 
 BASE_DIR = Path(__name__).absolute().parent
@@ -29,3 +30,14 @@ class DatabaseSetting:
 
 
 JWT_SECRET = ENV("JWT_SECRET")
+
+#logging
+logger = logging.getLogger(__name__)
+logger.setLevel("DEBUG")
+
+formatter = logging.Formatter(style="{", fmt="{asctime} | {levelname} | {message}")
+
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(formatter)
+stream_handler.setLevel("DEBUG")
+logger.addHandler(stream_handler)
