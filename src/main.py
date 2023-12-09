@@ -4,8 +4,8 @@ from src.endpoints import healthcheck_router
 from src.apps.users import user_router
 from src.apps.announcements import announcement_router
 from src.apps.categories import categories_router
-
 from src.apps.auth import auth_setup_router
+from src.exceptions import setup_exception_handlers
 
 
 API_ROOT_URL = "/api/v1"
@@ -70,3 +70,4 @@ app = FastAPI(
 )
 
 setup_router(app)
+setup_exception_handlers(app)

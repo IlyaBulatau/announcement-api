@@ -1,12 +1,15 @@
 from sqlalchemy import select, insert, delete
 from fastapi_users.models import ID
+from sqlalchemy.exc import DBAPIError
 
 from src.database.models import Announcement, Category
 from src.database.manager import RepositoryManager
 from src.apps.announcements.schemas import (
     AnnouncementCreate,
 )
+from src.exceptions.exceptions import InvalidInput
 from src.apps.announcements.constances import PAGINATE_OFFSET, PAGINATE_LIMIT
+from src.settings import logger
 
 
 class AnnouncementRepositoryManager(RepositoryManager):
@@ -35,7 +38,12 @@ class AnnouncementRepositoryManager(RepositoryManager):
         self, announcement_id: ID
     ) -> tuple[Announcement, Category] | tuple[None, None]:
         query = select(Announcement).filter(Announcement.id == announcement_id)
-        result = await self.session.execute(query)
+
+        try:
+            result = await self.session.execute(query)
+        except DBAPIError as error:
+            logger(error)
+            raise InvalidInput(error)
 
         announcement: Announcement = result.scalar()
 
