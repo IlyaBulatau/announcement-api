@@ -18,7 +18,3 @@ class UserCreate(schemas.CreateUpdateDictModel):
     username: str
     email: EmailStr
     password: str
-
-
-class UserUpdate(schemas.BaseUserUpdate):
-    username: str
