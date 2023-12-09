@@ -6,7 +6,7 @@ import uuid
 from src.apps.auth.config import auth_backend
 from src.apps.auth.manager import get_user_manager
 from src.database.models.user import User
-from src.apps.auth.schemas import UserCreate, UserRead, UserUpdate
+from src.apps.auth.schemas import UserCreate, UserRead
 
 
 fastapi_users = FastAPIUsers[User, uuid.UUID](
@@ -18,6 +18,7 @@ def auth_setup_router(main_router: APIRouter):
     tags = ["auth"]
     prefix = "/auth"
 
+     # https://fastapi-users.github.io/fastapi-users/12.1/usage/flow/#request_1
     main_router.include_router(
         fastapi_users.get_auth_router(auth_backend),
         prefix=prefix,
