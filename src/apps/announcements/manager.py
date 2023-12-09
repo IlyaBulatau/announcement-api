@@ -5,8 +5,8 @@ from src.database.models import Announcement, Category
 from src.database.manager import RepositoryManager
 from src.apps.announcements.schemas import (
     AnnouncementCreate,
-    AnnouncementRead,
 )
+from src.apps.announcements.constances import PAGINATE_OFFSET, PAGINATE_LIMIT
 
 
 class AnnouncementRepositoryManager(RepositoryManager):
@@ -47,8 +47,10 @@ class AnnouncementRepositoryManager(RepositoryManager):
         )
         return (announcement, category)
 
-    async def get_list(self) -> list[Announcement]:
-        query = select(Announcement)
+    async def get_list(
+        self, limit: int = PAGINATE_LIMIT, offset: int = PAGINATE_OFFSET
+    ) -> list[Announcement]:
+        query = select(Announcement).offset(offset - 1).limit(limit)
 
         result = await self.session.execute(query)
         return result.scalars()

@@ -26,6 +26,7 @@ DESCRIPTION = """
 * **Get list of announcement**
 * **Get certain announcement by ID**
 * **Delete certain announcement by ID**
+* **Pagination**
 
 ## Comments
 
@@ -60,9 +61,9 @@ app = FastAPI(
     contact={
         "name": "Developer",
         "url": "https://www.linkedin.com/in/ilya-bulatau-585133253",
-        "email": "ilyabulatau@gmail.com"
+        "email": "ilyabulatau@gmail.com",
     },
-    openapi_url=API_ROOT_URL+"/openapi.json",
+    openapi_url=API_ROOT_URL + "/openapi.json",
     description=DESCRIPTION,
     docs_url=API_ROOT_URL + "/docs",
     redoc_url=API_ROOT_URL + "/redoc",

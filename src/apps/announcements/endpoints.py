@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, Path
+from fastapi import APIRouter, Depends, Path, Query
 from fastapi.responses import JSONResponse
 from fastapi_users.models import ID
 
 from typing import Annotated
 
+from src.apps.announcements.constances import PAGINATE_LIMIT, PAGINATE_OFFSET
 from src.database.models import User, Announcement
 from src.apps.auth.routers import fastapi_users
 from src.apps.announcements.manager import AnnouncementRepositoryManager
@@ -53,12 +54,18 @@ async def create_announcement(
     "/",
     response_model=list[AnnouncementShortcut],
     status_code=200,
-    response_description="Return list of announcement objects",
+    response_description="Return list of announcement objects on paginate",
     summary="Get all announcement",
 )
 async def list_announcement(
     current_user: User = Depends(current_user),
     manager: AnnouncementRepositoryManager = Depends(AnnouncementRepositoryManager),
+    limit: Annotated[
+        int, Query(ge=1, le=100, description="number of results to be returned")
+    ] = PAGINATE_LIMIT,
+    offset: Annotated[
+        int, Query(ge=1, le=100000, description="starting from number")
+    ] = PAGINATE_OFFSET,
 ):
     """
     Accept:
@@ -68,7 +75,7 @@ async def list_announcement(
     Return list of Announcement from database
     """
 
-    announcements: list[Announcement] = await manager.get_list()
+    announcements: list[Announcement] = await manager.get_list(limit, offset)
     return [
         AnnouncementShortcut(
             id=announcement.id,
