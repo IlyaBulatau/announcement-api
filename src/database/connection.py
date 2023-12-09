@@ -14,12 +14,11 @@ async_session = async_sessionmaker(
 )
 
 
-async def get_async_session(commit: bool = True) -> AsyncSession:
+async def get_async_session() -> AsyncSession:
     session = async_session()
     try:
         yield session
-        if commit:
-            await session.commit()
+        await session.commit()
     except Exception as e:
         await session.rollback()
     finally:

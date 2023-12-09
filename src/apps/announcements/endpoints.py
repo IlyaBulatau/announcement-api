@@ -15,14 +15,14 @@ from src.apps.announcements.schemas import (
 
 router = APIRouter()
 current_user = fastapi_users.current_user()
-super_user = fastapi_users.current_user(superuser=True)
 
 
 @router.post(
     "/",
     status_code=201,
     response_model=AnnouncementRead,
-    response_description="Create and return new announcement",
+    response_description="Return data with new announcement object",
+    summary="Create new announcement"
 )
 async def create_announcement(
     announcement: AnnouncementCreate,
@@ -53,7 +53,8 @@ async def create_announcement(
     "/",
     response_model=list[AnnouncementShortcut],
     status_code=200,
-    response_description="Return all announcement",
+    response_description="Return list of announcement objects",
+    summary="Get all announcement"
 )
 async def list_announcement(
     current_user: User = Depends(current_user),
@@ -81,7 +82,8 @@ async def list_announcement(
     "/{announcement_id}",
     response_model=AnnouncementRead,
     status_code=200,
-    response_description="Return certain announcement on ID",
+    response_description="Return certain announcement",
+    summary="Get announcement by ID"
 )
 async def detail_announcement(
     announcement_id: Annotated[ID, Path(description="announcement ID")],
@@ -99,7 +101,7 @@ async def detail_announcement(
     """
     
     announcement, category = await manager.get_detail(announcement_id)
-    if announcement_id:
+    if announcement:
         return AnnouncementRead(
             id=announcement.id,
             title=announcement.title,
@@ -110,7 +112,7 @@ async def detail_announcement(
         )
     else:
         return JSONResponse(
-            content=f"announcement with {announcement_id} ID was not found",
+            content={"Error": f"announcement with {announcement_id} ID was not found"},
             status_code=404,
         )
 
@@ -118,7 +120,8 @@ async def detail_announcement(
 @router.delete(
     "/delete/{announcement_id}",
     status_code=200,
-    response_description="Return all announcement",
+    response_description="Return dict with operation status",
+    summary="Delete announcement by ID"
 )
 async def delete_announcement(
     announcement_id: Annotated[ID, Path(description="announcement ID")],
@@ -132,24 +135,24 @@ async def delete_announcement(
     manager object for make queries to database
 
     if announcement_id is not found return 404 error
-    if if the announcement does not belong to the current user
+    if the announcement does not belong to the current user
     return 403 error
     """
     
     announcement, _ = await manager.get_detail(announcement_id)
     if not announcement:
         return JSONResponse(
-            content=f"announcement with {announcement_id} ID was not found",
+            content={"Error": f"announcement with {announcement_id} ID was not found"},
             status_code=404,
         )
     if current_user.id != announcement.user_id:
         return JSONResponse(
-            content="You don't have permissions",
+            content={"Error": "You don't have permissions"},
             status_code=403,
         )
     else:
-        manager.delete(announcement_id)
+        await manager.delete(announcement_id)
         return JSONResponse(
-            content="Successful",
+            content={"Status":"Successful"},
             status_code=200,
         )

@@ -14,8 +14,9 @@ super_user = fastapi_users.current_user(superuser=True)
 
 
 @router.delete(
-        "/comments/delete/{comment_id}",
-        description="Deletes post comment"
+    "/comments/delete/{comment_id}",
+    response_description="Return operation status",
+    summary="Delete comment by ID"    
 )
 async def delete_comment(
     comment_id: Annotated[ID, Path(description="comment ID")],
@@ -34,12 +35,12 @@ async def delete_comment(
     comment: Comment = await manager.get_detail(comment_id)
     if not comment:
         return JSONResponse(
-            content=f"comment with {comment_id} ID was not found",
+            content={"Error": f"comment with {comment_id} ID was not found"},
             status_code=404,
         )
     else:
         await manager.delete(comment_id)
         return JSONResponse(
-            content="Successful",
+            content={"Status": "Successful"},
             status_code=200,
         )
