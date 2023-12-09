@@ -10,6 +10,28 @@ from src.apps.auth import auth_setup_router
 
 API_ROOT_URL = "/api/v1"
 
+DESCRIPTION = """
+*Announcement API will helps your project. 🚀
+
+## Users
+
+* **Create users** 
+* **Login users**
+* **JWT auth**
+* **Set up users permissions**
+
+## Announcements
+
+* **Create announcement by category**
+* **Get list of announcement**
+* **Get certain announcement by ID**
+* **Delete certain announcement by ID**
+
+## Comments
+
+* **Delete category comment by ID**
+"""
+
 main_router = APIRouter(prefix=API_ROOT_URL)
 
 
@@ -33,6 +55,15 @@ def setup_router(app: FastAPI, main_router: APIRouter = main_router) -> None:
 
 
 app = FastAPI(
+    title="Announcement API service",
+    version="0.0.1",
+    contact={
+        "name": "Developer",
+        "url": "https://www.linkedin.com/in/ilya-bulatau-585133253",
+        "email": "ilyabulatau@gmail.com"
+    },
+    openapi_url=API_ROOT_URL+"/openapi.json",
+    description=DESCRIPTION,
     docs_url=API_ROOT_URL + "/docs",
     redoc_url=API_ROOT_URL + "/redoc",
 )
