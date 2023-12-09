@@ -22,4 +22,4 @@ class UserCreate(schemas.CreateUpdateDictModel):
 
 
 class UserUpdate(schemas.BaseUserUpdate):
-    username: Optional[str] = None
+    username: str
