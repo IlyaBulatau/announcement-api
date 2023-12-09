@@ -8,6 +8,7 @@ from src.database.models.base import BaseModel
 
 CONTENT_MAX_LENGTH = 256
 
+
 class Comment(BaseModel):
     __tablename__ = "comments"
 
@@ -17,5 +18,7 @@ class Comment(BaseModel):
     content: orm.Mapped[db.String] = orm.mapped_column(
         db.String(length=CONTENT_MAX_LENGTH), nullable=False
     )
-    announcement_id: orm.Mapped[db.UUID] = orm.mapped_column(db.ForeignKey("announcements.id"))
+    announcement_id: orm.Mapped[db.UUID] = orm.mapped_column(
+        db.ForeignKey("announcements.id")
+    )
     user_id: orm.Mapped[db.UUID] = orm.mapped_column(db.ForeignKey("users.id"))

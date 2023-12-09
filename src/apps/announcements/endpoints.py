@@ -22,7 +22,7 @@ current_user = fastapi_users.current_user()
     status_code=201,
     response_model=AnnouncementRead,
     response_description="Return data with new announcement object",
-    summary="Create new announcement"
+    summary="Create new announcement",
 )
 async def create_announcement(
     announcement: AnnouncementCreate,
@@ -30,8 +30,8 @@ async def create_announcement(
     manager: AnnouncementRepositoryManager = Depends(AnnouncementRepositoryManager),
 ):
     """
-    Accept: 
-    announcement schema, 
+    Accept:
+    announcement schema,
     current_user as validating the token and getting the current user
     manager object for make queries to database
 
@@ -54,7 +54,7 @@ async def create_announcement(
     response_model=list[AnnouncementShortcut],
     status_code=200,
     response_description="Return list of announcement objects",
-    summary="Get all announcement"
+    summary="Get all announcement",
 )
 async def list_announcement(
     current_user: User = Depends(current_user),
@@ -83,7 +83,7 @@ async def list_announcement(
     response_model=AnnouncementRead,
     status_code=200,
     response_description="Return certain announcement",
-    summary="Get announcement by ID"
+    summary="Get announcement by ID",
 )
 async def detail_announcement(
     announcement_id: Annotated[ID, Path(description="announcement ID")],
@@ -99,7 +99,7 @@ async def detail_announcement(
     Return certain announcement on ID
     if announcement_id is not found return 404 error
     """
-    
+
     announcement, category = await manager.get_detail(announcement_id)
     if announcement:
         return AnnouncementRead(
@@ -121,7 +121,7 @@ async def detail_announcement(
     "/delete/{announcement_id}",
     status_code=200,
     response_description="Return dict with operation status",
-    summary="Delete announcement by ID"
+    summary="Delete announcement by ID",
 )
 async def delete_announcement(
     announcement_id: Annotated[ID, Path(description="announcement ID")],
@@ -138,7 +138,7 @@ async def delete_announcement(
     if the announcement does not belong to the current user
     return 403 error
     """
-    
+
     announcement, _ = await manager.get_detail(announcement_id)
     if not announcement:
         return JSONResponse(
@@ -153,6 +153,6 @@ async def delete_announcement(
     else:
         await manager.delete(announcement_id)
         return JSONResponse(
-            content={"Status":"Successful"},
+            content={"Status": "Successful"},
             status_code=200,
         )

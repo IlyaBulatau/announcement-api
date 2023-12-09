@@ -16,12 +16,12 @@ super_user = fastapi_users.current_user(superuser=True)
 @router.delete(
     "/comments/delete/{comment_id}",
     response_description="Return operation status",
-    summary="Delete comment by ID"    
+    summary="Delete comment by ID",
 )
 async def delete_comment(
     comment_id: Annotated[ID, Path(description="comment ID")],
     super_user: User = Depends(super_user),
-    manager: CommentRepositoryManager = Depends(CommentRepositoryManager)
+    manager: CommentRepositoryManager = Depends(CommentRepositoryManager),
 ):
     """
     Accept:

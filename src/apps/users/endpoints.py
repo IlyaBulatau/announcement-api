@@ -16,7 +16,7 @@ super_user = fastapi_users.current_user(superuser=True)
     response_model=UserRead,
     status_code=200,
     response_description="Return user fields that was changed",
-    summary="Mod user object"
+    summary="Mod user object",
 )
 async def protected_route(
     user_update_schema: UserUpdate,
@@ -34,7 +34,4 @@ async def protected_route(
     user = await manager.set_permission(user_update_schema)
     if user:
         return UserRead(**user.__dict__)
-    return JSONResponse(
-        content={"Status": "User is not found"},
-        status_code=200
-        )
+    return JSONResponse(content={"Status": "User is not found"}, status_code=200)
