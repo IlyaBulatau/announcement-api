@@ -16,11 +16,9 @@ class DatabaseSetting:
     POSTGRES_PORT: str | int = ENV("POSTGRES_PORT", "5432")
     POSTGRES_HOST: str = ENV("POSTGRES_HOST", "postgres")
 
-
     def get_url(self) -> str:
-        url = \
-        "postgresql+asyncpg://{user}:{password}@{host}:{port}/{db}"
-        
+        url = "postgresql+asyncpg://{user}:{password}@{host}:{port}/{db}"
+
         return url.format(
             user=self.POSTGRES_USER,
             password=self.POSTGRES_PASSWORD,
@@ -28,5 +26,6 @@ class DatabaseSetting:
             port=self.POSTGRES_PORT,
             db=self.POSTGRES_DB,
         )
-    
+
+
 JWT_SECRET = ENV("JWT_SECRET")

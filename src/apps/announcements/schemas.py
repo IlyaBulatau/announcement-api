@@ -13,7 +13,8 @@ class AnnouncementCreate(BaseModel):
 
     class Config:
         orm_mode = True
-        use_enum_values = True 
+        use_enum_values = True
+
 
 class AnnouncementRead(AnnouncementCreate):
     id: ID

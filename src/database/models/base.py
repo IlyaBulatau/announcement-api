@@ -7,7 +7,7 @@ from sqlalchemy.sql.functions import func
 
 class BaseModel(orm.DeclarativeBase):
     __abstract__ = True
-    
+
     created_on: orm.Mapped[datetime] = orm.mapped_column(
         db.DateTime(), server_default=func.now()
     )

@@ -13,15 +13,18 @@ from src.apps.auth.schemas import UserCreate
 
 
 class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
-    
-    async def create(self, user_create: schemas.UC, safe: bool = False, request: Request | None = None) -> models.UP:
+    async def create(
+        self,
+        user_create: schemas.UC,
+        safe: bool = False,
+        request: Request | None = None,
+    ) -> models.UP:
         await self.validate_username(user_create.username)
         return await super().create(user_create, safe, request)
-    
+
     async def validate_username(self, username: str):
         if await self.user_is_exists(self.user_db.session, username):
             raise exc.UserAlreadyExists()
-        
 
     async def validate_password(
         self,
@@ -38,9 +41,10 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
             )
 
     async def user_is_exists(self, session: AsyncSession, username: str) -> bool:
-        query = select(User).filter(User.username==username)
+        query = select(User).filter(User.username == username)
         resul = await session.execute(query)
         return resul.scalar()
+
 
 async def get_user_manager(user_db=Depends(get_user_db)):
     yield UserManager(user_db)

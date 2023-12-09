@@ -5,13 +5,14 @@ from src.settings import DatabaseSetting
 async_engine = create_async_engine(
     url=DatabaseSetting().get_url(),
     future=True,
-    )
+)
 
 async_session = async_sessionmaker(
-    bind=async_engine, 
+    bind=async_engine,
     expire_on_commit=False,
     class_=AsyncSession,
-    )
+)
+
 
 async def get_async_session(commit: bool = True) -> AsyncSession:
     session = async_session()
@@ -19,7 +20,7 @@ async def get_async_session(commit: bool = True) -> AsyncSession:
         yield session
         if commit:
             await session.commit()
-    except:
+    except Exception as e:
         await session.rollback()
     finally:
         await session.close()

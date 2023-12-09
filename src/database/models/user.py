@@ -9,4 +9,4 @@ class User(SQLAlchemyBaseUserTableUUID, BaseModel):
 
     username: orm.Mapped[str] = orm.mapped_column(
         String(length=32), unique=True, nullable=False
-        )
+    )
