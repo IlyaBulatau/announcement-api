@@ -217,7 +217,7 @@ curl --location 'http://localhost:8000/api/v1/announcement/' \
 <br>
 
 > [!IMPORTANT]
-> **При создании обьявления можно указывать только определенные категории, которые записаны в классе `EnumCategory` в файле `src/database/modelcategory.py`**
+> **При создании обьявления можно указывать только определенные категории, которые записаны в классе `EnumCategory` в файле `src/database/models/category.py`**
 > **если захотите изменить категории не забудьте выполнить миграцию в базу данных `make migrations` затем `make migrate`**
 
 <br>
