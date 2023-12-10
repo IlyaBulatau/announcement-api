@@ -1,0 +1,615 @@
+---
+openapi: 3.1.0
+info:
+  title: Announcement API service
+  description: "\n*Announcement API will helps your project. \U0001F680\n\n## Users\n\n*
+    **Create users** \n* **Login users**\n* **JWT auth**\n* **Set up users permissions**\n\n##
+    Announcements\n\n* **Create announcement by category**\n* **Get list of announcement**\n*
+    **Get certain announcement by ID**\n* **Delete certain announcement by ID**\n*
+    **Pagination**\n\n## Comments\n\n* **Delete category comment by ID**\n"
+  contact:
+    name: Developer
+    url: https://www.linkedin.com/in/ilya-bulatau-585133253
+    email: ilyabulatau@gmail.com
+  version: 0.0.1
+paths:
+  "/api/v1/healthcheck/":
+    get:
+      tags:
+      - heatlchecks
+      summary: Get healthcheck status
+      description: Healthcheck Endpoint
+      operationId: healthcheck_api_v1_healthcheck__get
+      responses:
+        '200':
+          description: Return operation status
+          content:
+            application/json:
+              schema: {}
+  "/api/v1/users/set_permission":
+    patch:
+      tags:
+      - users
+      summary: Mod user object
+      description: |-
+        Accept:
+        user_update_schema with field for update
+        user as validator super user
+        manager for work with query to database
+
+        if user is not found return 404 error
+      operationId: protected_route_api_v1_users_set_permission_patch
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UserUpdate"
+        required: true
+      responses:
+        '200':
+          description: Return user fields that was changed
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/UserRead"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      security:
+      - OAuth2PasswordBearer: []
+  "/api/v1/announcement/":
+    post:
+      tags:
+      - announcement
+      summary: Create new announcement
+      description: |-
+        Accept:
+        announcement schema,
+        current_user as validating the token and getting the current user
+        manager object for make queries to database
+
+        Create new announcement in database and return schema
+        also create category if it is not exists(and valide)
+      operationId: create_announcement_api_v1_announcement__post
+      security:
+      - OAuth2PasswordBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/AnnouncementCreate"
+      responses:
+        '201':
+          description: Return data with new announcement object
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/AnnouncementRead"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    get:
+      tags:
+      - announcement
+      summary: Get all announcement
+      description: |-
+        Accept:
+        current_user as validating the token and getting the current user
+        manager object for make queries to database
+
+        Return list of Announcement from database
+      operationId: list_announcement_api_v1_announcement__get
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          description: number of results to be returned
+          default: 10
+          title: Limit
+        description: number of results to be returned
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100000
+          minimum: 1
+          description: starting from number
+          default: 1
+          title: Offset
+        description: starting from number
+      responses:
+        '200':
+          description: Return list of announcement objects on paginate
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/AnnouncementShortcut"
+                title: Response List Announcement Api V1 Announcement  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/api/v1/announcement/{announcement_id}":
+    get:
+      tags:
+      - announcement
+      summary: Get announcement by ID
+      description: |-
+        Accept:
+        announcement_id for search it in database
+        current_user as validating the token and getting the current user
+        manager object for make queries to database
+
+        Return certain announcement on ID
+        if announcement_id is not found return 404 error
+      operationId: detail_announcement_api_v1_announcement__announcement_id__get
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: announcement_id
+        in: path
+        required: true
+        schema:
+          description: announcement ID
+          title: Announcement Id
+        description: announcement ID
+      responses:
+        '200':
+          description: Return certain announcement
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/AnnouncementRead"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/api/v1/announcement/delete/{announcement_id}":
+    delete:
+      tags:
+      - announcement
+      summary: Delete announcement by ID
+      description: |-
+        Accept:
+        announcement_id for search it in database
+        current_user as validating the token and getting the current user
+        manager object for make queries to database
+
+        if announcement_id is not found return 404 error
+        if the announcement does not belong to the current user
+        return 403 error
+      operationId: delete_announcement_api_v1_announcement_delete__announcement_id__delete
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: announcement_id
+        in: path
+        required: true
+        schema:
+          description: announcement ID
+          title: Announcement Id
+        description: announcement ID
+      responses:
+        '200':
+          description: Return dict with operation status
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/api/v1/categories/comments/delete/{comment_id}":
+    delete:
+      tags:
+      - categories
+      summary: Delete comment by ID
+      description: |-
+        Accept:
+        comment_id is ID comment that need delete
+        super_user as validating the token and getting the user with uper user credentials
+        manager object for make queries to database
+
+        if comment_id is not found return 404 error
+        if user doesn't have permission return 403 error
+      operationId: delete_comment_api_v1_categories_comments_delete__comment_id__delete
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: comment_id
+        in: path
+        required: true
+        schema:
+          description: comment ID
+          title: Comment Id
+        description: comment ID
+      responses:
+        '200':
+          description: Return operation status
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/api/v1/auth/login":
+    post:
+      tags:
+      - auth
+      summary: Auth:Jwt.Login
+      operationId: auth_jwt_login_api_v1_auth_login_post
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              "$ref": "#/components/schemas/Body_auth_jwt_login_api_v1_auth_login_post"
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BearerResponse"
+              example:
+                access_token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiOTIyMWZmYzktNjQwZi00MzcyLTg2ZDMtY2U2NDJjYmE1NjAzIiwiYXVkIjoiZmFzdGFwaS11c2VyczphdXRoIiwiZXhwIjoxNTcxNTA0MTkzfQ.M10bjOe45I5Ncu_uXvOmVV8QxnL-nZfcH96U90JaocI
+                token_type: bearer
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorModel"
+              examples:
+                LOGIN_BAD_CREDENTIALS:
+                  summary: Bad credentials or the user is inactive.
+                  value:
+                    detail: LOGIN_BAD_CREDENTIALS
+                LOGIN_USER_NOT_VERIFIED:
+                  summary: The user is not verified.
+                  value:
+                    detail: LOGIN_USER_NOT_VERIFIED
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/api/v1/auth/logout":
+    post:
+      tags:
+      - auth
+      summary: Auth:Jwt.Logout
+      operationId: auth_jwt_logout_api_v1_auth_logout_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '401':
+          description: Missing token or inactive user.
+      security:
+      - OAuth2PasswordBearer: []
+  "/api/v1/auth/register":
+    post:
+      tags:
+      - auth
+      summary: Register:Register
+      operationId: register_register_api_v1_auth_register_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UserCreate"
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/UserRead"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorModel"
+              examples:
+                REGISTER_USER_ALREADY_EXISTS:
+                  summary: A user with this email already exists.
+                  value:
+                    detail: REGISTER_USER_ALREADY_EXISTS
+                REGISTER_INVALID_PASSWORD:
+                  summary: Password validation failed.
+                  value:
+                    detail:
+                      code: REGISTER_INVALID_PASSWORD
+                      reason: Password should beat least 3 characters
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+components:
+  schemas:
+    AnnouncementCreate:
+      properties:
+        title:
+          type: string
+          title: Title
+        content:
+          type: string
+          title: Content
+        category:
+          "$ref": "#/components/schemas/EnumCategory"
+      type: object
+      required:
+      - title
+      - content
+      - category
+      title: AnnouncementCreate
+    AnnouncementRead:
+      properties:
+        title:
+          type: string
+          title: Title
+        content:
+          type: string
+          title: Content
+        category:
+          type: string
+          title: Category
+        id:
+          title: Id
+        user_id:
+          title: User Id
+        created_on:
+          type: string
+          format: date-time
+          title: Created On
+      type: object
+      required:
+      - title
+      - content
+      - category
+      - id
+      - user_id
+      - created_on
+      title: AnnouncementRead
+    AnnouncementShortcut:
+      properties:
+        id:
+          title: Id
+        title:
+          type: string
+          title: Title
+      type: object
+      required:
+      - id
+      - title
+      title: AnnouncementShortcut
+    BearerResponse:
+      properties:
+        access_token:
+          type: string
+          title: Access Token
+        token_type:
+          type: string
+          title: Token Type
+      type: object
+      required:
+      - access_token
+      - token_type
+      title: BearerResponse
+    Body_auth_jwt_login_api_v1_auth_login_post:
+      properties:
+        grant_type:
+          anyOf:
+          - type: string
+            pattern: password
+          - type: 'null'
+          title: Grant Type
+        username:
+          type: string
+          title: Username
+        password:
+          type: string
+          title: Password
+        scope:
+          type: string
+          title: Scope
+          default: ''
+        client_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Id
+        client_secret:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Secret
+      type: object
+      required:
+      - username
+      - password
+      title: Body_auth_jwt_login_api_v1_auth_login_post
+    EnumCategory:
+      type: string
+      enum:
+      - sale
+      - purchase
+      - services
+      title: EnumCategory
+    ErrorModel:
+      properties:
+        detail:
+          anyOf:
+          - type: string
+          - additionalProperties:
+              type: string
+            type: object
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: ErrorModel
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            "$ref": "#/components/schemas/ValidationError"
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    UserCreate:
+      properties:
+        username:
+          type: string
+          title: Username
+        email:
+          type: string
+          format: email
+          title: Email
+        password:
+          type: string
+          title: Password
+      type: object
+      required:
+      - username
+      - email
+      - password
+      title: UserCreate
+    UserRead:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        email:
+          type: string
+          format: email
+          title: Email
+        is_active:
+          type: boolean
+          title: Is Active
+          default: true
+        is_superuser:
+          type: boolean
+          title: Is Superuser
+          default: false
+        is_verified:
+          type: boolean
+          title: Is Verified
+          default: false
+        username:
+          type: string
+          title: Username
+        created_on:
+          type: string
+          format: date-time
+          title: Created On
+        update_on:
+          type: string
+          format: date-time
+          title: Update On
+      type: object
+      required:
+      - id
+      - email
+      - username
+      - created_on
+      - update_on
+      title: UserRead
+    UserUpdate:
+      properties:
+        password:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Password
+        email:
+          anyOf:
+          - type: string
+            format: email
+          - type: 'null'
+          title: Email
+        is_active:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Active
+        is_superuser:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Superuser
+        is_verified:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Verified
+        username:
+          type: string
+          title: Username
+      type: object
+      required:
+      - username
+      title: UserUpdate
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    OAuth2PasswordBearer:
+      type: oauth2
+      flows:
+        password:
+          scopes: {}
+          tokenUrl: auth/login
