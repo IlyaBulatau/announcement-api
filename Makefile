@@ -1,22 +1,22 @@
 POETRY = docker exec app poetry run
 
-run:
+run: # run docker containers
 	docker compose --env-file ./env/.env up -d
 
-build:
+build: # build docker containers
 	docker compose --env-file ./env/.env build
 
-req_install:
+req_install: # install requirements in app container
 	$(POETRY) poetry install
 
-logs:
+logs: # show logs in app container
 	docker logs app -f
 
-stop:
+stop: # stop all containers
 	docker stop $$(docker ps -a -q)
 
-migration:
+migrations: # create migrations inside app container
 	$(POETRY) alembic revision --autogenerate
 
-migrate:
+migrate: # apply migration inside application container for database
 	$(POETRY) alembic upgrade head
