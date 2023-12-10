@@ -18,7 +18,7 @@ class Comment(BaseModel):
     content: orm.Mapped[db.String] = orm.mapped_column(
         db.String(length=CONTENT_MAX_LENGTH), nullable=False
     )
-    announcement_id: orm.Mapped[db.UUID] = orm.mapped_column(
-        db.ForeignKey("announcements.id")
+    category_id: orm.Mapped[db.UUID] = orm.mapped_column(
+        db.ForeignKey("categories.id")
     )
     user_id: orm.Mapped[db.UUID] = orm.mapped_column(db.ForeignKey("users.id"))
