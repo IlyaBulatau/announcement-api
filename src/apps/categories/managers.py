@@ -21,7 +21,7 @@ class CommentRepositoryManager(RepositoryManager):
         except DBAPIError as error:
             logger.info(error)
             raise InvalidInput(error)
-        
+
         return result.scalar()
 
     async def delete(self, comment_id: ID) -> None:

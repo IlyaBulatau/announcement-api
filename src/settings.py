@@ -31,7 +31,7 @@ class DatabaseSetting:
 
 JWT_SECRET = ENV("JWT_SECRET")
 
-#logging
+# logging
 logger = logging.getLogger(__name__)
 logger.setLevel("DEBUG")
 
