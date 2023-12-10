@@ -1,13 +1,13 @@
 from sqlalchemy import select, insert, delete
 from fastapi_users.models import ID
-from sqlalchemy.exc import DBAPIError
+from sqlalchemy.exc import DBAPIError, IntegrityError
 
 from src.database.models import Announcement, Category
 from src.database.manager import RepositoryManager
 from src.apps.announcements.schemas import (
     AnnouncementCreate,
 )
-from src.exceptions.exceptions import InvalidInput
+from src.exceptions.exceptions import InvalidInput, DuplicateObject
 from src.apps.announcements.constances import PAGINATE_OFFSET, PAGINATE_LIMIT
 from src.settings import logger
 
@@ -31,7 +31,11 @@ class AnnouncementRepositoryManager(RepositoryManager):
             .returning(Announcement)
         )
 
-        result = await self.session.execute(query)
+        try:
+            result = await self.session.execute(query)
+        except IntegrityError as error:
+            logger.info(error)
+            raise DuplicateObject(error)
         return (result.scalar(), category)
 
     async def get_detail(
@@ -42,7 +46,7 @@ class AnnouncementRepositoryManager(RepositoryManager):
         try:
             result = await self.session.execute(query)
         except DBAPIError as error:
-            logger(error)
+            logger.info(error)
             raise InvalidInput(error)
 
         announcement: Announcement = result.scalar()
@@ -65,7 +69,12 @@ class AnnouncementRepositoryManager(RepositoryManager):
 
     async def delete(self, announcement_id: ID) -> None:
         query = delete(Announcement).filter(Announcement.id == announcement_id)
-        await self.session.execute(query)
+
+        try:
+            await self.session.execute(query)
+        except DBAPIError as error:
+            logger.info(error)
+            raise InvalidInput(error)
 
     async def get_or_create_category(self, name: str = None, id: ID = None) -> Category:
         query = select(Category).filter(
