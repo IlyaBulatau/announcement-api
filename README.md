@@ -9,7 +9,7 @@
 
 # Схема базы данных
 
-![Untitled (3)](https://lh3.googleusercontent.com/pw/ADCreHee98a-4pR3Mhoq3ohfqV6rCnggi63RgrPIBNnfPoasq6fMd2qx5soo6DXrlLnc_0ihg5MRNgJaD5fhmbV4Eizai-B9tAYv7ji8rJJs5nkms0zczhwR3BkL7205DKrWuFE9lRKixIXZMHY0OCFvkibRtzg_vpIPLR2RNgrWULPtWVXtidb2RdI58tl7TTFBUVr5VOAw51Dk-heod0UHSlm3dxg2klfOHNP9CXxyctz3YdAiKbvle3XjNs7bqjlFjZNo0C41ggpjIA9ZHKmmP1L9w0zhdBSLWfUre8KerolQZVOZFBi6OCLEnqq2vV8QQz0wyNQLmp3iXuD8RSjDISWl-KL_lVrNbpPZ5zRYsv_C_E5oGmsWjGiNHFHn2p1BcTy7r24_CwcWWN3EtDsSCvc0Wx0Y0iTfmJRgnxRIqA76YtDE6awi569WZg2TmkdBc4HLWZra0_gJ-dqaiY7qaxWPjQn-vjb3_QYJ1uiGq45h7xzoiAgX_0Gbl6_d-IIsKRE7f0RUJ9tgW3uA0REunLG2lVsd1C9JYMGGiAomBA-kMCOEYkauB2ElzUx7_yx5msRQz9U0WCEFanDmVzMdOpysasENFf-aUo5rBzG3rwA2xPAksYHGpIbQ-de7Kxyahv_hYX6I1ahQxLvs7hUX0ZEN3lJtEgi43Be13uK9-746DJgpuAWtALEktslrIWg9R5M8xodMAmGGVg0S49TF9UZq3j5U58TcPMLCJhPVAHOSMZWJE3F4E5I7J_uKA1YnbfvzXwc_J8kQ5SYf0pxADgtzXDWxsUROsjZWvtzHvzCc_7IO3lplAOSdJ2xPZ_2Ow4nv7HUXg8fadAKSEFVdUJW-CPKssjZsES4cGLU3nfWKkN_F_UkjyrZDI63luLGJ=w891-h640-s-no?authuser=0)
+![Untitled (3)](https://lh3.googleusercontent.com/pw/ADCreHeFQrIYF_vVYkEcrk9UhCYNq33mG2ZEM7u6RCUcezvvK_7jySqC2-5MOKos6wS0srmjYsdaBo9ZkPuBIQu90rcM2SJ0kWEYAkCGfuDDhbpqgr85zGwwdewu1DyKYCqTKSLNSz4_83M_FMFwdkJjBYU=w891-h640-s-no?authuser=0)
 
 <br>
 
@@ -71,17 +71,12 @@ make run
 <br>
 
 # Ендпоинты
-## Для проверки работоспособности конечных точек можно воспользоватся `Postman`, `curl` либо `swagger` по ссылки на документацию проекта.
-## Все ендпоинты кроме `api/v1/auth/login` и `api/v1/auth/register` защищенны проверкой jwt токена, поэтому что бы проверить работу остальных конечных точек,
-## нужно пройти регистрацию и получить `Bearer` токен, и затем этот токен вставлять в заголовок `Authorization`, кроме этого есть ендпоинты которые
-## доступны только супер юзерам. После регистрации пользователи не становяться супер-юзером, что бы сделать юзера супер-юзером
+## Для проверки работоспособности конечных точек можно воспользоватся `Postman`, `curl` либо `swagger` по ссылки на документацию проекта. Все ендпоинты кроме `api/v1/auth/login` и `api/v1/auth/register` защищенны проверкой jwt токена, поэтому что бы проверить работу остальных конечных точек, нужно пройти регистрацию и получить `Bearer` токен, и затем этот токен вставлять в заголовок `Authorization`, кроме этого есть ендпоинты которые доступны только супер юзерам. После регистрации пользователи не становяться супер-юзером, что бы сделать юзера супер-юзером
 ## нужно зайти в базу данных и вручную поставить галочку в поле `is_superuser`, для этого есть контейнер `pgadmin`.
 
 ____
 
-## **non-auth** - ендпоинт не трубющий аутендификации
-## **auth** - требуется токен авторизации
-## **admin** - требуется токен от супер-юзера
+## **non-auth** - ендпоинт не требующий аутендификации <br> **auth** - требуется токен авторизации <br> **admin** - требуется токен от супер-юзера
 ___
 
 1.
